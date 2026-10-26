@@ -1,29 +1,37 @@
-name: Postpush
-
+"name: JupyterLab Build and Test
 on:
   push:
     branches: [master]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Setup Python
-        uses: actions/setup-python@v2
+          node-version: ""10""
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - name: Install dependencies
-        run: npm install
-      - name: Run tests
-        run: npm test
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+          python-version: ""3.7""
+      - run: pip install pipenv
+      - run: npm install
+      - run: npm run build
+      - run: pipenv install --dev
+      - run: pipenv run bash -c ""./scripts/build.sh""
+      - run: pipenv run pytest
+      - uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
-          path: dist/
+          name: python-shared-server-${{ github.sha }}
+          path: server
+      - uses: actions/upload-artifact@v4
+        with:
+          name: typescript-client-${{ github.sha }}
+          path: lib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jupyterlab-extensions-${{ github.sha }}
+          path: packages
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions-${{ github.sha }}
+          path: dist"
