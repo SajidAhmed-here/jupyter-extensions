@@ -1,4 +1,4 @@
-"name: JupyterLab Build and Test
+name: JupyterLab Build and Test
 on:
   push:
     branches: [master]
@@ -34,4 +34,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: python-distributions-${{ github.sha }}
-          path: dist"
+          path: dist
